@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('applicant_eligibility', function (Blueprint $table) {
+        Schema::create('applicant_eligibilities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('application_id')->constrained('applications')->onDelete('cascade');
-            $table->foreignId('eligibility_type_id')->constrained('eligibility_types')->onDelete('cascade');
+            $table->foreignId('eligibility_type_id')->nullable()->constrained('eligibility_types')->nullOnDelete();
             $table->string('other_name', 255)->nullable();
             $table->string('license_no', 100)->nullable();
             $table->date('date_issued')->nullable();
@@ -25,6 +25,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('applicant_eligibility');
+        Schema::dropIfExists('applicant_eligibilities');
     }
 };
