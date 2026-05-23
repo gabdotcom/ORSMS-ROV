@@ -5,10 +5,22 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HR\JobPostingsController;
 use App\Http\Controllers\HR\HRDashboardController;
 use App\Http\Controllers\HR\ApplicationsController;
+use App\Http\Controllers\HR\IERController;
 use App\Http\Controllers\Applicant\ApplicantController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Models\JobPosting;
 
 Route::get('/', function () {
-    return view('welcome');
+    $allJobPostings = JobPosting::with('plantillaPosition')
+        ->withCount('applications')
+        ->where('status', 'open')
+        ->where('deadline', '>=', now())
+        ->latest('posted_at')
+        ->get();
+
+    $jobPostings = $allJobPostings->take(4);
+
+    return view('welcome', compact('jobPostings', 'allJobPostings'));
 })->name('welcome');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -57,12 +69,10 @@ Route::middleware(['auth'])->group(function () {
         return view('board.dashboard');
     })->name('board.dashboard');
 
-    Route::get('/admin/dashboard', function () {
-        if (auth()->user()->role !== 'admin') {
-            return redirect('/' . auth()->user()->role . '/dashboard');
-        }
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::post('/admin/users/{user}/update-role', [AdminController::class, 'updateRole'])->name('admin.users.update-role');
+    Route::post('/admin/users/{user}/update-status', [AdminController::class, 'updateStatus'])->name('admin.users.update-status');
 
     // HR Job Postings (protected by auth middleware above)
     Route::get('/hr/job-postings', [JobPostingsController::class, 'index'])->name('hr.job-postings');
@@ -80,4 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/hr/applications/{application}/status', [ApplicationsController::class, 'updateStatus'])->name('hr.applications.update-status');
     Route::put('/hr/applications/{application}/sector-evaluation', [ApplicationsController::class, 'storeSectorEvaluation'])->name('hr.applications.sector-evaluation');
     Route::get('/hr/applications/{application}/details', [ApplicationsController::class, 'getApplicationDetails'])->name('hr.applications.details');
+
+    // HR IER
+    Route::get('/hr/ier', [IERController::class, 'index'])->name('hr.ier');
 });

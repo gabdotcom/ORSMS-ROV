@@ -92,12 +92,15 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 8px 16px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
             .btn-secondary {
@@ -106,11 +109,35 @@
                 font-size: 14px;
                 font-weight: 500;
                 padding: 8px 16px;
-                border-radius: var(--rounded-md);
                 border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
             }
             .btn-secondary:hover { background: var(--color-surface-strong); }
+            .btn-danger {
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border: none;
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .user-info { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--color-surface-strong); border-radius: var(--rounded-md); }
             .user-avatar { width: 36px; height: 36px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px; }
             .user-name { font-weight: 500; font-size: 14px; }
@@ -138,7 +165,7 @@
             .confirm-buttons { display: flex; gap: 12px; justify-content: flex-end; }
             .confirm-btn { padding: 10px 20px; border-radius: var(--rounded-md); font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
             .confirm-btn-cancel { background: var(--color-surface-strong); color: var(--color-ink); }
-            .confirm-btn-logout { background: #dc2626; color: white; }
+            .confirm-btn-danger { background: #dc2626; color: white; }
             .action-buttons { display: flex; gap: 8px; }
             .modal-overlay {
                 display: none;
@@ -323,6 +350,11 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                     <span>Applications</span>
                 </a>
+                <div class="nav-section">Reports</div>
+                <a href="{{ route('hr.ier') }}" class="nav-link {{ Route::is('hr.ier') ? 'active' : '' }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    <span>IER</span>
+                </a>
                 <div class="nav-section">System</div>
                 <a href="#" class="nav-link">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -415,7 +447,7 @@
                     <button type="button" class="confirm-btn confirm-btn-cancel" onclick="hideLogoutConfirm()">Cancel</button>
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                         @csrf
-                        <button type="submit" class="confirm-btn confirm-btn-logout">Sign Out</button>
+                        <button type="submit" class="confirm-btn confirm-btn-danger">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -485,6 +517,12 @@
                     hideLogoutConfirm();
                     closeReviewModal();
                 }
+            });
+            document.getElementById('logoutConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideLogoutConfirm();
+            });
+            document.getElementById('reviewModal').addEventListener('click', function(e) {
+                if (e.target === this) closeReviewModal();
             });
 
             let currentAppId = null;
@@ -622,6 +660,12 @@
                 body.innerHTML = html;
             }
 
+            function formatDate(dateStr) {
+                if (!dateStr) return '-';
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+
             function renderSectorSection(sectorName, entries, fields) {
                 const sectorTitle = sectorName.charAt(0).toUpperCase() + sectorName.slice(1);
                 const eval = sectorEvaluations[sectorName];
@@ -659,7 +703,7 @@
                             
                             if (field.key === 'period') {
                                 label = 'Period';
-                                value = entry.start_date + (entry.is_present ? ' - Present' : (entry.end_date ? ' - ' + entry.end_date : ''));
+                                value = formatDate(entry.start_date) + (entry.is_present ? ' - Present' : (entry.end_date ? ' - ' + formatDate(entry.end_date) : ''));
                             } else if (field.key === 'type') {
                                 label = 'Type';
                                 value = entry.eligibility_type?.name || entry.other_name || '-';
@@ -669,6 +713,9 @@
                             } else if (field.key === 'training_hours') {
                                 label = 'Hours';
                                 value = entry[field.key] ? entry[field.key] + ' hours' : '-';
+                            } else if (['date_conducted', 'date_issued'].includes(field.key)) {
+                                label = field.title;
+                                value = formatDate(entry[field.key]);
                             } else {
                                 label = field.title;
                                 value = entry[field.key] || '-';
@@ -815,13 +862,13 @@
                 if (anyDisqualified) {
                     statusSelect.innerHTML = `
                         <option value="pending" ${currentValue === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="qualified" disabled>Qualified</option>
+                        <option value="qualified" disabled ${currentValue === 'qualified' ? 'selected' : ''}>Qualified</option>
                         <option value="disqualified" ${currentValue === 'disqualified' ? 'selected' : ''}>Disqualified</option>
                     `;
                 } else if (!allEvaluated) {
                     statusSelect.innerHTML = `
                         <option value="pending" ${currentValue === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="qualified" disabled>Qualified</option>
+                        <option value="qualified" disabled ${currentValue === 'qualified' ? 'selected' : ''}>Qualified</option>
                         <option value="disqualified" ${currentValue === 'disqualified' ? 'selected' : ''}>Disqualified</option>
                     `;
                 } else if (allQualified && allEvaluated) {

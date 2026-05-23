@@ -163,6 +163,64 @@
                 border-radius: 4px;
             }
 
+            .badge-open {
+                background: #16a34a;
+                color: #fff;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.88px;
+                border-radius: 9999px;
+                padding: 4px 10px;
+            }
+
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+                overflow-y: auto;
+                padding: var(--spacing-lg);
+            }
+            .modal-overlay.open { display: flex; }
+            .modal-content {
+                background: var(--color-canvas);
+                border-radius: var(--rounded-xl);
+                max-width: 640px;
+                width: 100%;
+                padding: var(--spacing-xl);
+                position: relative;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            }
+            .modal-close {
+                position: absolute;
+                top: var(--spacing-base);
+                right: var(--spacing-base);
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: var(--color-muted);
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+            .modal-close:hover { background: var(--color-surface-strong); color: var(--color-ink); }
+            body.modal-open { overflow: hidden; }
+            .modal-divider {
+                height: 1px;
+                background: var(--color-hairline-strong);
+                margin: var(--spacing-base) 0;
+            }
+
             @media (max-width: 640px) {
                 .font-display-mega { font-size: 32px; letter-spacing: -0.5px; }
                 .font-display-lg { font-size: 24px; letter-spacing: -0.5px; }
@@ -225,87 +283,37 @@
 
                 <!-- Job Listings -->
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-lg);">
-                    <!-- Job Card 1 -->
-                    <div class="job-card">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-sm);">
-                            <div>
-                                <h3 class="font-title-md" style="margin-bottom: 4px;">Teacher I - Elementary</h3>
-                                <span class="dept-tag">Division of Albay</span>
+                    @forelse ($jobPostings as $job)
+                        <div class="job-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-sm);">
+                                <div>
+                                    <h3 class="font-title-md" style="margin-bottom: 4px;">{{ $job->plantillaPosition->position_name }}</h3>
+                                    <span class="dept-tag">{{ $job->plantillaPosition->department }}</span>
+                                </div>
+                                <span class="badge-open">Open</span>
                             </div>
-                            <span class="badge-pill">Open</span>
-                        </div>
-                        <p class="font-body-sm text-body" style="margin-bottom: var(--spacing-base);">Teaching position for Grades 1-3. Minimum requirement: Bachelor of Elementary Education.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <span class="font-caption text-muted">Salary Grade 11</span>
-                                <span class="font-caption text-muted" style="margin-left: var(--spacing-base);">5 openings</span>
+                            <p class="font-body-sm text-body" style="margin-bottom: var(--spacing-base);">{{ $job->description }}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <span class="font-caption text-muted">Salary Grade {{ $job->plantillaPosition->salary_grade }}</span>
+                                    <span class="font-caption text-muted">Posted {{ $job->posted_at?->format('M d, Y') ?? 'N/A' }}</span>
+                                    <span class="font-caption text-muted">{{ $job->applications_count > 0 ? $job->applications_count . ' applicant' . ($job->applications_count > 1 ? 's' : '') : 'No applicants yet' }} &middot; Deadline: {{ $job->deadline->format('M d, Y') }}</span>
+                                </div>
+                                <button onclick="openJobModal({{ $job->id }})" class="btn-secondary" style="padding: 8px 16px; height: 36px; font-size: 13px; align-self: end;">View Details</button>
                             </div>
-                            <a href="#" class="btn-secondary" style="padding: 8px 16px; height: 36px; font-size: 13px;">View Details</a>
                         </div>
-                    </div>
-
-                    <!-- Job Card 2 -->
-                    <div class="job-card">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-sm);">
-                            <div>
-                                <h3 class="font-title-md" style="margin-bottom: 4px;">Administrative Officer III</h3>
-                                <span class="dept-tag">Regional Office</span>
-                            </div>
-                            <span class="badge-pill">Open</span>
+                    @empty
+                        <div style="grid-column: 1 / -1; text-align: center; padding: var(--spacing-xxl) 0;">
+                            <p class="font-body-md text-muted">No open positions at the moment. Please check back later.</p>
                         </div>
-                        <p class="font-body-sm text-body" style="margin-bottom: var(--spacing-base);">Administrative position handling records management and personnel services.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <span class="font-caption text-muted">Salary Grade 15</span>
-                                <span class="font-caption text-muted" style="margin-left: var(--spacing-base);">2 openings</span>
-                            </div>
-                            <a href="#" class="btn-secondary" style="padding: 8px 16px; height: 36px; font-size: 13px;">View Details</a>
-                        </div>
-                    </div>
-
-                    <!-- Job Card 3 -->
-                    <div class="job-card">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-sm);">
-                            <div>
-                                <h3 class="font-title-md" style="margin-bottom: 4px;">School Head - Secondary</h3>
-                                <span class="dept-tag">Division of Camarines Sur</span>
-                            </div>
-                            <span class="badge-pill">Open</span>
-                        </div>
-                        <p class="font-body-sm text-body" style="margin-bottom: var(--spacing-base);">School leadership position. Minimum 5 years teaching experience required.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <span class="font-caption text-muted">Salary Grade 24</span>
-                                <span class="font-caption text-muted" style="margin-left: var(--spacing-base);">1 opening</span>
-                            </div>
-                            <a href="#" class="btn-secondary" style="padding: 8px 16px; height: 36px; font-size: 13px;">View Details</a>
-                        </div>
-                    </div>
-
-                    <!-- Job Card 4 -->
-                    <div class="job-card">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-sm);">
-                            <div>
-                                <h3 class="font-title-md" style="margin-bottom: 4px;">Guidance Counselor II</h3>
-                                <span class="dept-tag">Division of Sorsogon</span>
-                            </div>
-                            <span class="badge-pill" style="background: #fef3c7; color: #92400e;">Urgent</span>
-                        </div>
-                        <p class="font-body-sm text-body" style="margin-bottom: var(--spacing-base);">Provides counseling services to students. RPm license required.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <span class="font-caption text-muted">Salary Grade 16</span>
-                                <span class="font-caption text-muted" style="margin-left: var(--spacing-base);">3 openings</span>
-                            </div>
-                            <a href="#" class="btn-secondary" style="padding: 8px 16px; height: 36px; font-size: 13px;">View Details</a>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
 
-                <!-- View All Link -->
-                <div style="text-align: center; margin-top: var(--spacing-xl);">
-                    <a href="#" class="text-link font-body-md">View all open positions &rarr;</a>
-                </div>
+                @if ($allJobPostings->isNotEmpty())
+                    <div style="text-align: center; margin-top: var(--spacing-xl);">
+                        <button onclick="openViewAllModal()" class="text-link font-body-md" style="background: none; border: none; cursor: pointer; font-family: inherit;">View all open positions &rarr;</button>
+                    </div>
+                @endif
             </div>
         </section>
 
@@ -338,16 +346,218 @@
             </div>
         </section>
 
-        <!-- CTA Section -->
+        <!-- FAQ Section -->
         <section style="padding: var(--spacing-section) 0; background: var(--color-canvas);">
-            <div class="container" style="text-align: center;">
-                <h2 class="font-display-lg" style="margin-bottom: var(--spacing-lg);">Ready to Start Your Career?</h2>
-                <p class="font-body-md text-body" style="margin-bottom: var(--spacing-xl); max-width: 500px; margin-left: auto; margin-right: auto;">
-                    Create an account now to start applying for positions in DEPED Region V.
-                </p>
-                <a href="{{ route('register') }}" class="btn-primary">Create Account</a>
+            <div class="container" style="max-width: 720px;">
+                <h2 class="font-display-lg" style="text-align: center; margin-bottom: var(--spacing-xxl);">Frequently Asked Questions</h2>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                    <!-- Q1 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-hairline-strong); border-radius: var(--rounded-lg); overflow: hidden;">
+                        <button onclick="this.parentElement.classList.toggle('open')" style="width: 100%; background: none; border: none; padding: var(--spacing-lg); text-align: left; font: inherit; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="font-title-sm">How do I create an account?</span>
+                            <span class="faq-icon" style="font-size: 20px; transition: transform 0.2s;">+</span>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 var(--spacing-lg);">
+                            <p class="font-body-sm text-body" style="padding-bottom: var(--spacing-lg);">Click the "Apply Now" button on the top right or the "Create Account" button below. Fill in your email address, full name, and create a password. After registration, you can complete your profile with your personal information, education, training, and work experience.</p>
+                        </div>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-hairline-strong); border-radius: var(--rounded-lg); overflow: hidden;">
+                        <button onclick="this.parentElement.classList.toggle('open')" style="width: 100%; background: none; border: none; padding: var(--spacing-lg); text-align: left; font: inherit; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="font-title-sm">How do I apply for a job?</span>
+                            <span class="faq-icon" style="font-size: 20px; transition: transform 0.2s;">+</span>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 var(--spacing-lg);">
+                            <p class="font-body-sm text-body" style="padding-bottom: var(--spacing-lg);">Once your profile is complete, browse the Available Positions section on this page. Click "View Details" on a position you're interested in, then click "Apply" to submit your application. You can track all your applications on your applicant dashboard after logging in.</p>
+                        </div>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-hairline-strong); border-radius: var(--rounded-lg); overflow: hidden;">
+                        <button onclick="this.parentElement.classList.toggle('open')" style="width: 100%; background: none; border: none; padding: var(--spacing-lg); text-align: left; font: inherit; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="font-title-sm">What documents do I need to submit?</span>
+                            <span class="faq-icon" style="font-size: 20px; transition: transform 0.2s;">+</span>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 var(--spacing-lg);">
+                            <p class="font-body-sm text-body" style="padding-bottom: var(--spacing-lg);">You will need your Diploma, Transcript of Records (TOR), Certificate of Employment (COE), eligibility (if applicable), and other relevant training certificates. Upload these documents in your profile before applying to a position.</p>
+                        </div>
+                    </div>
+                    <!-- Q4 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-hairline-strong); border-radius: var(--rounded-lg); overflow: hidden;">
+                        <button onclick="this.parentElement.classList.toggle('open')" style="width: 100%; background: none; border: none; padding: var(--spacing-lg); text-align: left; font: inherit; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="font-title-sm">How are applications evaluated?</span>
+                            <span class="faq-icon" style="font-size: 20px; transition: transform 0.2s;">+</span>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 var(--spacing-lg);">
+                            <p class="font-body-sm text-body" style="padding-bottom: var(--spacing-lg);">Each application is reviewed by sector evaluators (Education, Training, Experience, Eligibility, and Document Verification). Each sector marks you as qualified or disqualified. Your general status — Qualified, Disqualified, or Pending — is determined based on the overall evaluation results.</p>
+                        </div>
+                    </div>
+                    <!-- Q5 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-hairline-strong); border-radius: var(--rounded-lg); overflow: hidden;">
+                        <button onclick="this.parentElement.classList.toggle('open')" style="width: 100%; background: none; border: none; padding: var(--spacing-lg); text-align: left; font: inherit; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="font-title-sm">How do I track my application status?</span>
+                            <span class="faq-icon" style="font-size: 20px; transition: transform 0.2s;">+</span>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 var(--spacing-lg);">
+                            <p class="font-body-sm text-body" style="padding-bottom: var(--spacing-lg);">Log in to your account and go to your dashboard. You will see a list of all your submitted applications along with their current status. You can click on any application to view detailed evaluation results from each sector.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <style>
+            .faq-item.open .faq-icon { transform: rotate(45deg); }
+            .faq-item.open .faq-answer { max-height: 300px !important; }
+        </style>
+
+        <script>
+            window.jobsData = <?php echo json_encode($allJobPostings->map(fn($j) => [
+                'id' => $j->id,
+                'position_name' => $j->plantillaPosition->position_name,
+                'department' => $j->plantillaPosition->department,
+                'salary_grade' => $j->plantillaPosition->salary_grade,
+                'monthly_salary' => number_format($j->monthly_salary, 2),
+                'description' => $j->description,
+                'required_education' => $j->required_education,
+                'required_training' => $j->required_training,
+                'required_experience' => $j->required_experience,
+                'required_eligibility' => $j->required_eligibility,
+                'requirements' => $j->requirements,
+                'deadline' => $j->deadline->format('M d, Y'),
+                'posted_at' => $j->posted_at?->format('M d, Y') ?? 'N/A',
+                'applications_count' => $j->applications_count,
+                'job_description_pdf' => $j->job_description_pdf,
+            ])) ?>;
+            window.isAuthenticated = <?php echo json_encode(auth()->check()) ?>;
+        </script>
+
+        <!-- Job Detail Modal -->
+        <div class="modal-overlay" id="jobDetailModal" onclick="closeModal('jobDetailModal')">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal('jobDetailModal')">&times;</button>
+                <div id="jobModalBody">
+                    <h2 class="font-display-md" id="modalJobTitle" style="margin-bottom: 4px;"></h2>
+                    <span class="dept-tag" id="modalJobDept"></span>
+                    <div class="modal-divider"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm); margin-bottom: var(--spacing-base);">
+                        <div><span class="font-caption text-muted">Salary Grade</span><br><span class="font-body-sm" id="modalJobSG"></span></div>
+                        <div><span class="font-caption text-muted">Monthly Salary</span><br><span class="font-body-sm" id="modalJobSalary"></span></div>
+                        <div><span class="font-caption text-muted">Posted</span><br><span class="font-body-sm" id="modalJobPosted"></span></div>
+                        <div><span class="font-caption text-muted">Deadline</span><br><span class="font-body-sm" id="modalJobDeadline"></span></div>
+                        <div><span class="font-caption text-muted">Applicants</span><br><span class="font-body-sm" id="modalJobApplicants"></span></div>
+                    </div>
+                    <div class="modal-divider"></div>
+                    <h3 class="font-title-sm" style="margin-bottom: var(--spacing-xs);">Description</h3>
+                    <p class="font-body-sm text-body" id="modalJobDesc" style="margin-bottom: var(--spacing-base);"></p>
+                    <h3 class="font-title-sm" style="margin-bottom: var(--spacing-xs);">Qualification Standards</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm); margin-bottom: var(--spacing-base);">
+                        <div><span class="font-caption text-muted">Education</span><br><span class="font-body-sm" id="modalJobEdu"></span></div>
+                        <div><span class="font-caption text-muted">Training</span><br><span class="font-body-sm" id="modalJobTraining"></span></div>
+                        <div><span class="font-caption text-muted">Experience</span><br><span class="font-body-sm" id="modalJobExp"></span></div>
+                        <div><span class="font-caption text-muted">Eligibility</span><br><span class="font-body-sm" id="modalJobElig"></span></div>
+                    </div>
+                    <div id="modalJobPdfRow" style="display: none; margin-bottom: var(--spacing-base);">
+                        <a id="modalJobPdfLink" href="#" target="_blank" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; gap: var(--spacing-xs);">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            View Job Description (PDF)
+                        </a>
+                    </div>
+                    <div class="modal-divider"></div>
+                    <div style="text-align: center; padding-top: var(--spacing-sm);">
+                        <a id="modalApplyBtn" class="btn-primary" style="text-decoration: none;">Apply Now</a>
+                        <p class="font-caption text-muted" id="modalApplyHint" style="margin-top: var(--spacing-xs);"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View All Positions Modal -->
+        <div class="modal-overlay" id="viewAllModal" onclick="closeModal('viewAllModal')">
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px;">
+                <button class="modal-close" onclick="closeModal('viewAllModal')">&times;</button>
+                <h2 class="font-display-md" style="margin-bottom: var(--spacing-lg);">All Open Positions</h2>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);" id="viewAllList">
+                    @foreach ($allJobPostings as $job)
+                        <div class="job-card" style="padding: var(--spacing-base);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 class="font-title-sm" style="margin-bottom: 2px;">{{ $job->plantillaPosition->position_name }}</h3>
+                                    <span class="dept-tag" style="font-size: 11px;">{{ $job->plantillaPosition->department }}</span>
+                                    <span class="font-caption text-muted" style="margin-left: var(--spacing-sm);">SG {{ $job->plantillaPosition->salary_grade }} &middot; {{ $job->applications_count > 0 ? $job->applications_count . ' applicant' . ($job->applications_count > 1 ? 's' : '') : 'No applicants yet' }}</span>
+                                </div>
+                                <button onclick="closeModal('viewAllModal'); openJobModal({{ $job->id }})" class="btn-secondary" style="padding: 6px 12px; height: 32px; font-size: 12px;">View</button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openJobModal(jobId) {
+                const job = window.jobsData.find(j => j.id === jobId);
+                if (!job) return;
+
+                document.getElementById('modalJobTitle').textContent = job.position_name;
+                document.getElementById('modalJobDept').textContent = job.department;
+                document.getElementById('modalJobSG').textContent = 'SG ' + job.salary_grade;
+                document.getElementById('modalJobSalary').textContent = '\u20B1' + job.monthly_salary;
+                document.getElementById('modalJobPosted').textContent = job.posted_at;
+                document.getElementById('modalJobDeadline').textContent = job.deadline;
+                document.getElementById('modalJobApplicants').textContent = job.applications_count > 0 ? job.applications_count + ' applicant' + (job.applications_count > 1 ? 's' : '') : 'No applicants yet';
+                document.getElementById('modalJobDesc').textContent = job.description;
+                document.getElementById('modalJobEdu').textContent = job.required_education || 'None';
+                document.getElementById('modalJobTraining').textContent = job.required_training || 'None';
+                document.getElementById('modalJobExp').textContent = job.required_experience || 'None';
+                document.getElementById('modalJobElig').textContent = job.required_eligibility || 'None';
+
+                const pdfRow = document.getElementById('modalJobPdfRow');
+                const pdfLink = document.getElementById('modalJobPdfLink');
+                if (job.job_description_pdf) {
+                    pdfRow.style.display = 'block';
+                    pdfLink.href = '/storage/' + job.job_description_pdf;
+                } else {
+                    pdfRow.style.display = 'none';
+                }
+
+                const applyBtn = document.getElementById('modalApplyBtn');
+                const applyHint = document.getElementById('modalApplyHint');
+                if (window.isAuthenticated) {
+                    applyBtn.href = '/applicant/jobs/' + job.id + '/apply';
+                    applyBtn.textContent = 'Apply Now';
+                    applyHint.textContent = '';
+                } else {
+                    applyBtn.href = '{{ route('register') }}';
+                    applyBtn.textContent = 'Create Account to Apply';
+                    applyHint.textContent = 'You need an account to apply for this position.';
+                }
+
+                openModal('jobDetailModal');
+            }
+
+            function openViewAllModal() {
+                openModal('viewAllModal');
+            }
+
+            function openModal(id) {
+                document.getElementById(id).classList.add('open');
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal(id) {
+                document.getElementById(id).classList.remove('open');
+                document.body.classList.remove('modal-open');
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.open').forEach(function (el) {
+                        el.classList.remove('open');
+                    });
+                    document.body.classList.remove('modal-open');
+                }
+            });
+        </script>
 
         <!-- Footer -->
         <footer style="background: var(--color-canvas); padding: 48px; border-top: 1px solid var(--color-hairline);">

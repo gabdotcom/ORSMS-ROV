@@ -62,23 +62,51 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 12px 24px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
             .btn-secondary {
-                background: var(--color-surface-strong);
+                background: var(--color-surface-card);
                 color: var(--color-ink);
                 font-size: 14px;
                 font-weight: 500;
-                padding: 12px 24px;
+                padding: 8px 16px;
+                border: 1px solid var(--color-hairline-strong);
                 border-radius: var(--rounded-md);
-                border: none;
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
+            }
+            .btn-secondary:hover { background: var(--color-surface-strong); }
+            .btn-danger {
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border: none;
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
             }
             .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
             .job-info-box { background: var(--color-canvas-soft); border-radius: var(--rounded-md); padding: 16px; margin-bottom: 24px; }

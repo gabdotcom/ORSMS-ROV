@@ -31,12 +31,17 @@
     .btn-add { background: var(--color-surface-strong); color: var(--color-ink); padding: 10px 20px; border-radius: var(--rounded-md); border: none; cursor: pointer; font-size: 14px; font-weight: 500; margin-top: 10px; }
     .btn-add:hover { background: var(--color-hairline); }
     .btn-nav { padding: 12px 28px; border-radius: var(--rounded-md); font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
-    .btn-next { background: var(--color-primary); color: white; }
+    .btn-next { background: var(--color-primary); color: white; font-size: 14px; font-weight: 500; padding: 10px 18px; border: none; border-radius: var(--rounded-md); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; height: 40px; }
     .btn-next:hover { background: var(--color-primary-hover); }
-    .btn-prev { background: var(--color-surface-strong); color: var(--color-ink); }
-    .btn-prev:hover { background: var(--color-hairline); }
-    .btn-submit { background: #16a34a; color: white; }
-    .btn-submit:hover { background: #15803d; }
+    .btn-prev { background: var(--color-surface-card); color: var(--color-ink); border: 1px solid var(--color-hairline-strong); font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: var(--rounded-md); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; height: 36px; }
+    .btn-prev:hover { background: var(--color-surface-strong); }
+    .btn-submit { background: var(--color-primary); color: white; font-size: 14px; font-weight: 500; padding: 10px 18px; border: none; border-radius: var(--rounded-md); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; height: 40px; }
+    .btn-submit:hover { background: var(--color-primary-hover); }
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 12px;
+        height: 30px;
+    }
     .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-hairline); }
     .job-info-box { background: var(--color-canvas-soft); border-radius: var(--rounded-md); padding: 16px; margin-bottom: 20px; }
     .job-info-box h3 { font-size: 16px; margin-bottom: 4px; }

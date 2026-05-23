@@ -74,12 +74,14 @@
                 font-size: 14px;
                 font-weight: 500;
                 padding: 10px 18px;
-                border-radius: var(--rounded-md);
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                text-decoration: none;
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
             .btn-secondary {
@@ -88,9 +90,14 @@
                 font-size: 14px;
                 font-weight: 500;
                 padding: 8px 16px;
-                border-radius: var(--rounded-md);
                 border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
             }
             .btn-secondary:hover { background: var(--color-surface-strong); }
             .btn-danger {
@@ -104,6 +111,11 @@
                 cursor: pointer;
             }
             .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .search-bar { display: flex; gap: 12px; margin-bottom: 20px; }
             .search-input {
                 flex: 1;
@@ -220,7 +232,7 @@
             .confirm-buttons { display: flex; gap: 12px; justify-content: center; }
             .confirm-btn { padding: 10px 24px; border-radius: var(--rounded-md); font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
             .confirm-btn-cancel { background: var(--color-surface-strong); color: var(--color-ink); }
-            .confirm-btn-delete { background: #dc2626; color: white; }
+            .confirm-btn-danger { background: #dc2626; color: white; }
             .toast {
                 position: fixed;
                 bottom: 24px;
@@ -266,6 +278,11 @@
                 <a href="{{ route('hr.applications') }}" class="nav-link {{ Route::is('hr.applications*') ? 'active' : '' }}">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                     <span>Applications</span>
+                </a>
+                <div class="nav-section">Reports</div>
+                <a href="{{ route('hr.ier') }}" class="nav-link {{ Route::is('hr.ier') ? 'active' : '' }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    <span>IER</span>
                 </a>
                 <div class="nav-section">System</div>
                 <a href="#" class="nav-link">
@@ -475,7 +492,7 @@
                     <form method="POST" id="deleteForm" style="display:inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="confirm-btn confirm-btn-delete">Delete</button>
+                        <button type="submit" class="confirm-btn confirm-btn-danger">Delete</button>
                     </form>
                 </div>
             </div>
@@ -490,7 +507,7 @@
                     <button type="button" class="confirm-btn confirm-btn-cancel" onclick="hideLogoutConfirm()">Cancel</button>
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                         @csrf
-                        <button type="submit" class="confirm-btn confirm-btn-delete">Sign Out</button>
+                        <button type="submit" class="confirm-btn confirm-btn-danger">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -708,6 +725,15 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 3000);
             }
+            document.getElementById('jobModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            document.getElementById('deleteConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideDeleteConfirm();
+            });
+            document.getElementById('logoutConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideLogoutConfirm();
+            });
         </script>
     </body>
 </html>
