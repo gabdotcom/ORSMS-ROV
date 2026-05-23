@@ -71,12 +71,52 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 10px 20px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
+            .btn-secondary {
+                background: var(--color-surface-card);
+                color: var(--color-ink);
+                font-size: 14px;
+                font-weight: 500;
+                padding: 8px 16px;
+                border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
+            }
+            .btn-secondary:hover { background: var(--color-surface-strong); }
+            .btn-danger {
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border: none;
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .entry-item { padding: 12px; background: var(--color-canvas-soft); border-radius: var(--rounded-md); margin-bottom: 12px; }
             .entry-item:last-child { margin-bottom: 0; }
             .entry-title { font-weight: 500; font-size: 14px; margin-bottom: 4px; }
@@ -126,6 +166,7 @@
             </div>
             <div class="header-actions">
                 <a href="{{ route('hr.applications') }}">Back to Applications</a>
+                <a href="{{ route('hr.ier') }}" style="margin-left:16px;">IER</a>
             </div>
         </header>
 

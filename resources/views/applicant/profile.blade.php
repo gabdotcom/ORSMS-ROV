@@ -81,12 +81,52 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 12px 24px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
+            .btn-secondary {
+                background: var(--color-surface-card);
+                color: var(--color-ink);
+                font-size: 14px;
+                font-weight: 500;
+                padding: 8px 16px;
+                border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
+            }
+            .btn-secondary:hover { background: var(--color-surface-strong); }
+            .btn-danger {
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border: none;
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .user-info { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--color-surface-strong); border-radius: var(--rounded-md); margin-top: auto; }
             .user-avatar { width: 40px; height: 40px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; }
             .user-name { font-weight: 500; }
@@ -303,6 +343,9 @@
             function hideLogoutConfirm() {
                 document.getElementById('logoutConfirm').classList.remove('show');
             }
+            document.getElementById('logoutConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideLogoutConfirm();
+            });
         </script>
     </body>
 </html>

@@ -85,27 +85,52 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 10px 20px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
             .btn-secondary {
                 background: var(--color-surface-card);
-                color: var(--color-body);
+                color: var(--color-ink);
                 font-size: 14px;
                 font-weight: 500;
-                padding: 10px 20px;
-                border-radius: var(--rounded-md);
+                padding: 8px 16px;
                 border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
             }
             .btn-secondary:hover { background: var(--color-surface-strong); }
+            .btn-danger {
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border: none;
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .btn-disabled { background: var(--color-surface-strong); color: var(--color-muted); font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: var(--rounded-md); border: none; }
             .user-info { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--color-surface-strong); border-radius: var(--rounded-md); }
             .user-avatar { width: 40px; height: 40px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; }
@@ -121,7 +146,7 @@
             .confirm-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
             .confirm-btn { padding: 10px 24px; border-radius: var(--rounded-md); font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
             .confirm-btn-cancel { background: var(--color-surface-strong); color: var(--color-ink); }
-            .confirm-btn-logout { background: #dc2626; color: white; }
+            .confirm-btn-danger { background: #dc2626; color: white; }
             .alert { padding: 12px 16px; border-radius: var(--rounded-md); margin-bottom: 20px; font-size: 14px; }
             .alert-error { background: #fee2e2; color: #991b1b; }
             .job-detail-section { margin-bottom: 24px; }
@@ -152,8 +177,6 @@
             .pdf-link svg { width: 18px; height: 18px; }
             .no-pdf { display: inline-flex; align-items: center; gap: 8px; background: var(--color-surface-strong); color: var(--color-body); padding: 10px 16px; border-radius: 8px; font-size: 14px; }
             .action-buttons { display: flex; gap: 8px; }
-            .btn-view { background: var(--color-surface-strong); color: var(--color-ink); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: var(--rounded-md); border: 1px solid var(--color-hairline-strong); cursor: pointer; }
-            .btn-view:hover { background: var(--color-hairline); }
             .section-divider { border-top: 1px solid var(--color-hairline); margin: 20px 0; padding-top: 20px; }
             .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
             .modal-close-btn { background: none; border: none; font-size: 24px; color: var(--color-muted); cursor: pointer; padding: 4px; line-height: 1; }
@@ -239,7 +262,7 @@
                                 </div>
                             </div>
                             <div class="action-buttons">
-                                <button type="button" class="btn-view" onclick="viewJob({{ $job->id }})">View</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="viewJob({{ $job->id }})">View</button>
                                 @if(in_array($job->id, $appliedJobIds))
                                     <span class="btn-disabled">Already Applied</span>
                                 @else
@@ -293,7 +316,7 @@
                     <button type="button" class="confirm-btn confirm-btn-cancel" onclick="hideLogoutConfirm()">Cancel</button>
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                         @csrf
-                        <button type="submit" class="confirm-btn confirm-btn-logout">Sign Out</button>
+                        <button type="submit" class="confirm-btn confirm-btn-danger">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -601,6 +624,9 @@
             });
             document.getElementById('applyModal').addEventListener('click', function(e) {
                 if (e.target === this) closeApplyModal();
+            });
+            document.getElementById('logoutConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideLogoutConfirm();
             });
 
             // Update relative times - run immediately and then every minute

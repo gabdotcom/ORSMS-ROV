@@ -92,12 +92,15 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 10px 20px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
             .btn-secondary {
@@ -105,12 +108,15 @@
                 color: var(--color-ink);
                 font-size: 14px;
                 font-weight: 500;
-                padding: 10px 20px;
-                border-radius: var(--rounded-md);
+                padding: 8px 16px;
                 border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
             }
             .btn-secondary:hover { background: var(--color-surface-strong); }
             .btn-danger {
@@ -119,12 +125,20 @@
                 font-size: 13px;
                 font-weight: 500;
                 padding: 6px 12px;
-                border-radius: var(--rounded-md);
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
             }
             .btn-danger:hover { background: #fecaca; }
             .btn-small { font-size: 12px; padding: 4px 10px; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .entry-row {
                 border: 1px solid var(--color-hairline);
                 border-radius: var(--rounded-md);
@@ -312,7 +326,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Date Conducted</label>
-                                    <input type="date" name="trainings[{{ $loop->index }}][date_conducted]" class="form-input" value="{{ $train->date_conducted }}">
+                                    <input type="date" name="trainings[{{ $loop->index }}][date_conducted]" class="form-input" value="{{ $train->date_conducted?->format('Y-m-d') }}">
                                 </div>
                             </div>
                         </div>
@@ -367,11 +381,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Start Date</label>
-                                    <input type="date" name="experiences[{{ $loop->index }}][start_date]" class="form-input" value="{{ $exp->start_date }}" required>
+                                    <input type="date" name="experiences[{{ $loop->index }}][start_date]" class="form-input" value="{{ $exp->start_date?->format('Y-m-d') }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">End Date</label>
-                                    <input type="date" name="experiences[{{ $loop->index }}][end_date]" class="form-input" value="{{ $exp->end_date }}" {{ $exp->is_present ? 'disabled' : '' }}>
+                                    <input type="date" name="experiences[{{ $loop->index }}][end_date]" class="form-input" value="{{ $exp->end_date?->format('Y-m-d') }}" {{ $exp->is_present ? 'disabled' : '' }}>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
@@ -464,7 +478,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Date Issued (Optional)</label>
-                                    <input type="date" name="eligibilities[{{ $loop->index }}][date_issued]" class="form-input" value="{{ $elig->date_issued }}">
+                                    <input type="date" name="eligibilities[{{ $loop->index }}][date_issued]" class="form-input" value="{{ $elig->date_issued?->format('Y-m-d') }}">
                                 </div>
                             </div>
                         </div>

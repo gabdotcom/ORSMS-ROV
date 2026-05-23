@@ -37,8 +37,11 @@ class ApplicationsController extends Controller
 
         $applications = $query->orderBy('created_at', 'desc')->get();
         $jobPostings = JobPosting::with('plantillaPosition')
-            ->where('status', 'open')
-            ->orWhere('status', 'closed')
+            ->where(function ($q) {
+                $q->where('status', 'open')
+                    ->orWhere('status', 'closed');
+            })
+            ->whereHas('applications')
             ->get();
 
         return view('hr.applications', compact('applications', 'jobPostings'));

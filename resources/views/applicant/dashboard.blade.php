@@ -85,25 +85,52 @@
                 color: white;
                 font-size: 14px;
                 font-weight: 500;
-                padding: 8px 16px;
-                border-radius: var(--rounded-md);
+                padding: 10px 18px;
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
                 text-decoration: none;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                height: 40px;
             }
             .btn-primary:hover { background: var(--color-primary-hover); }
+            .btn-secondary {
+                background: var(--color-surface-card);
+                color: var(--color-ink);
+                font-size: 14px;
+                font-weight: 500;
+                padding: 8px 16px;
+                border: 1px solid var(--color-hairline-strong);
+                border-radius: var(--rounded-md);
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                height: 36px;
+            }
+            .btn-secondary:hover { background: var(--color-surface-strong); }
             .btn-danger {
                 background: #fee2e2;
                 color: #dc2626;
                 font-size: 13px;
                 font-weight: 500;
                 padding: 6px 12px;
-                border-radius: var(--rounded-md);
                 border: none;
+                border-radius: var(--rounded-md);
                 cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
             }
             .btn-danger:hover { background: #fecaca; }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px;
+                height: 30px;
+            }
             .user-info { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--color-surface-strong); border-radius: var(--rounded-md); }
             .user-avatar { width: 40px; height: 40px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; }
             .user-name { font-weight: 500; }
@@ -130,8 +157,8 @@
             .confirm-btn { padding: 10px 24px; border-radius: var(--rounded-md); font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
             .confirm-btn-cancel { background: var(--color-surface-strong); color: var(--color-ink); }
             .confirm-btn-cancel:hover { background: var(--color-hairline); }
-            .confirm-btn-danger { background: #dc2626; color: white; }
-            .confirm-btn-danger:hover { background: #b91c1c; }
+            .confirm-btn-logout { background: #dc2626; color: white; }
+            .confirm-btn-logout:hover { background: #b91c1c; }
             .modal-overlay {
                 display: none;
                 position: fixed;
@@ -329,9 +356,9 @@
                                     <td>{{ $app->created_at->format('M d, Y') }}</td>
                                     <td><span class="badge badge-{{ $app->status }}">{{ ucfirst($app->status) }}</span></td>
                                     <td>
-                                        <button type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openViewModal({{ $app->id }})">View</button>
+                                        <button type="button" class="btn-secondary btn-sm" onclick="openViewModal({{ $app->id }})">View</button>
                                         @if($app->status === 'pending')
-                                            <button type="button" class="btn-primary" style="padding: 4px 10px; font-size: 12px; margin-left: 4px;" onclick="openEditModal({{ $app->id }})">Edit</button>
+                                            <button type="button" class="btn-primary btn-sm" style="margin-left: 4px;" onclick="openEditModal({{ $app->id }})">Edit</button>
                                             <button type="button" class="btn-danger" style="margin-left: 4px;" onclick="showWithdrawConfirm({{ $app->id }})">Withdraw</button>
                                         @else
                                             <span style="color: var(--color-muted); font-size: 13px; margin-left: 8px;">Locked</span>
@@ -354,7 +381,7 @@
                 <p class="confirm-message">Are you sure you want to withdraw this application? This action cannot be undone.</p>
                 <div class="confirm-buttons">
                     <button type="button" class="confirm-btn confirm-btn-cancel" onclick="hideWithdrawConfirm()">Cancel</button>
-                    <button type="button" class="confirm-btn confirm-btn-danger" id="confirmWithdrawBtn">Withdraw</button>
+                    <button type="button" class="confirm-btn confirm-btn-logout" id="confirmWithdrawBtn">Withdraw</button>
                 </div>
             </div>
         </div>
@@ -368,7 +395,7 @@
                     <button type="button" class="confirm-btn confirm-btn-cancel" onclick="hideLogoutConfirm()">Cancel</button>
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                         @csrf
-                        <button type="submit" class="confirm-btn confirm-btn-danger">Sign Out</button>
+                        <button type="submit" class="confirm-btn confirm-btn-logout">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -398,8 +425,8 @@
                     <div class="loading">Loading...</div>
                 </div>
                 <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #f0f0f3; display: flex; gap: 12px; justify-content: flex-end;">
-                    <button type="button" onclick="closeEditModal()" style="padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; background: #f0f0f3; color: #171717;">Cancel</button>
-                    <button type="button" onclick="saveApplication()" style="padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; background: #0057B8; color: white;">Save Changes</button>
+                    <button type="button" onclick="closeEditModal()" class="btn-secondary">Cancel</button>
+                    <button type="button" onclick="saveApplication()" class="btn-primary">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -511,7 +538,7 @@
                         html += `
                             <div class="entry-item">
                                 <div class="entry-title">${train.training_title}</div>
-                                <div class="entry-detail">${train.training_hours || ''} hours${train.date_conducted ? ' - ' + train.date_conducted : ''}</div>
+                                <div class="entry-detail">${train.training_hours || ''} hours${train.date_conducted ? ' - ' + new Date(train.date_conducted).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}</div>
                                 ${fileUrl ? `<a href="${fileUrl}" target="_blank" class="entry-file"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> View Document</a>` : ''}
                             </div>
                         `;
@@ -526,7 +553,7 @@
                         html += `
                             <div class="entry-item">
                                 <div class="entry-title">${exp.position} at ${exp.employer}</div>
-                                <div class="entry-detail">${exp.start_date}${exp.is_present ? ' - Present' : (exp.end_date ? ' - ' + exp.end_date : '')}${exp.sector ? ' | ' + exp.sector : ''}</div>
+                                <div class="entry-detail">${new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}${exp.is_present ? ' - Present' : (exp.end_date ? ' - ' + new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '')}${exp.sector ? ' | ' + exp.sector : ''}</div>
                                 ${fileUrl ? `<a href="${fileUrl}" target="_blank" class="entry-file"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> View Document</a>` : ''}
                             </div>
                         `;
@@ -541,7 +568,7 @@
                         html += `
                             <div class="entry-item">
                                 <div class="entry-title">${elig.eligibility_type?.name || 'Other'}</div>
-                                <div class="entry-detail">${elig.license_no ? 'License: ' + elig.license_no : ''}${elig.date_issued ? ' | Issued: ' + elig.date_issued : ''}</div>
+                                <div class="entry-detail">${elig.license_no ? 'License: ' + elig.license_no : ''}${elig.date_issued ? ' | Issued: ' + new Date(elig.date_issued).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}</div>
                                 ${fileUrl ? `<a href="${fileUrl}" target="_blank" class="entry-file"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> View Document</a>` : ''}
                             </div>
                         `;
@@ -918,7 +945,15 @@
                 if (e.key === 'Escape') {
                     closeViewModal();
                     closeEditModal();
+                    hideWithdrawConfirm();
+                    hideLogoutConfirm();
                 }
+            });
+            document.getElementById('logoutConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideLogoutConfirm();
+            });
+            document.getElementById('withdrawConfirm').addEventListener('click', function(e) {
+                if (e.target === this) hideWithdrawConfirm();
             });
         </script>
     </body>
