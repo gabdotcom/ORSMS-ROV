@@ -182,6 +182,20 @@
                 <label class="form-label">Contact Number</label>
                 <input type="text" name="contact_number" class="form-input" value="{{ $profile->contact_number ?? '' }}">
             </div>
+            <div class="form-row" style="margin-top:8px;">
+                <div class="checkbox-group">
+                    <input type="checkbox" name="is_person_with_disability" value="1" id="pwd" {{ ($profile->is_person_with_disability ?? false) ? 'checked' : '' }}>
+                    <label for="pwd" class="form-label" style="margin-bottom:0;cursor:pointer;">Person with Disability (PWD)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="is_solo_parent" value="1" id="solo_parent" {{ ($profile->is_solo_parent ?? false) ? 'checked' : '' }}>
+                    <label for="solo_parent" class="form-label" style="margin-bottom:0;cursor:pointer;">Solo Parent</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="is_member_of_indigenous_people" value="1" id="ip" {{ ($profile->is_member_of_indigenous_people ?? false) ? 'checked' : '' }}>
+                    <label for="ip" class="form-label" style="margin-bottom:0;cursor:pointer;">Member of Indigenous People</label>
+                </div>
+            </div>
         </div>
 
         <!-- Step 2: Address -->
@@ -214,6 +228,12 @@
 
         <!-- Step 3: Education -->
         <div class="step-content" data-step="3">
+            @if($jobPosting->required_education)
+                <div class="job-info-box" style="border-left:4px solid var(--color-primary);padding:12px 16px;margin-bottom:16px;">
+                    <div style="font-size:12px;font-weight:600;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Qualification Standard</div>
+                    <div style="font-size:13px;color:var(--color-body);">{{ $jobPosting->required_education }}</div>
+                </div>
+            @endif
             <div id="educationContainer">
                 <div class="entry-card" data-index="0">
                     <div class="form-row">
@@ -252,6 +272,12 @@
 
         <!-- Step 4: Training -->
         <div class="step-content" data-step="4">
+            @if($jobPosting->required_training)
+                <div class="job-info-box" style="border-left:4px solid var(--color-primary);padding:12px 16px;margin-bottom:16px;">
+                    <div style="font-size:12px;font-weight:600;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Qualification Standard</div>
+                    <div style="font-size:13px;color:var(--color-body);">{{ $jobPosting->required_training }}</div>
+                </div>
+            @endif
             <div id="trainingContainer">
                 <div class="entry-card" data-index="0">
                     <div class="form-row">
@@ -282,6 +308,12 @@
 
         <!-- Step 5: Experience -->
         <div class="step-content" data-step="5">
+            @if($jobPosting->required_experience)
+                <div class="job-info-box" style="border-left:4px solid var(--color-primary);padding:12px 16px;margin-bottom:16px;">
+                    <div style="font-size:12px;font-weight:600;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Qualification Standard</div>
+                    <div style="font-size:13px;color:var(--color-body);">{{ $jobPosting->required_experience }}</div>
+                </div>
+            @endif
             <div id="experienceContainer">
                 <div class="entry-card" data-index="0">
                     <div class="form-row">
@@ -327,6 +359,12 @@
 
         <!-- Step 6: Eligibility -->
         <div class="step-content" data-step="6">
+            @if($jobPosting->required_eligibility)
+                <div class="job-info-box" style="border-left:4px solid var(--color-primary);padding:12px 16px;margin-bottom:16px;">
+                    <div style="font-size:12px;font-weight:600;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Qualification Standard</div>
+                    <div style="font-size:13px;color:var(--color-body);">{{ $jobPosting->required_eligibility }}</div>
+                </div>
+            @endif
             <div id="eligibilityContainer">
                 <div class="entry-card">
                     <div class="form-row">
@@ -458,13 +496,13 @@
         document.getElementById('age').value = age;
     }
 
-    // Calculate age on page load if date exists
-    document.addEventListener('DOMContentLoaded', function() {
+    // Calculate age immediately (form loaded via AJAX, DOMContentLoaded already fired)
+    (function() {
         const dobInput = document.querySelector('input[name="date_of_birth"]');
         if (dobInput && dobInput.value) {
             calculateAge(dobInput.value);
         }
-    });
+    })();
 
     const totalSteps = 8;
 
@@ -550,13 +588,29 @@
                 }
             });
             if (!hasEducation && eduCards.length > 0) {
-                alert('Please add at least one education entry with school name');
+                showToast('Please add at least one education entry with school name', true);
+                return false;
+            }
+        }
+
+        if (step === 6) {
+            const eligContainer = document.getElementById('eligibilityContainer');
+            const eligCards = eligContainer.querySelectorAll('.entry-card');
+            let hasEligibility = false;
+            eligCards.forEach(card => {
+                const typeSelect = card.querySelector('[name$="[eligibility_type_id]"]');
+                if (typeSelect && typeSelect.value) {
+                    hasEligibility = true;
+                }
+            });
+            if (!hasEligibility) {
+                showToast('Please select an eligibility type before proceeding.', true);
                 return false;
             }
         }
 
         if (!isValid) {
-            alert('Please fill in all required fields');
+            showToast('Please fill in all required fields', true);
             if (firstError) firstError.focus();
         }
         return isValid;
@@ -660,10 +714,10 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Application submitted successfully! Your application code is: ' + data.application_code);
+                showToast('Application submitted successfully! Your application code is: ' + data.application_code);
                 window.location.href = data.redirect || '/applicant/dashboard';
             } else {
-                alert('Error: ' + (data.message || 'Something went wrong'));
+                showToast('Error: ' + (data.message || 'Something went wrong'), true);
             }
         })
         .catch(err => {
