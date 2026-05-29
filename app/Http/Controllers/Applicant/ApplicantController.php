@@ -235,6 +235,9 @@ class ApplicantController extends Controller
                 'barangay' => $validated['barangay'] ?? null,
                 'zip_code' => $validated['zip_code'] ?? null,
                 'current_address' => $validated['current_address'] ?? null,
+                'is_person_with_disability' => $request->has('is_person_with_disability') ? 1 : 0,
+                'is_solo_parent' => $request->has('is_solo_parent') ? 1 : 0,
+                'is_member_of_indigenous_people' => $request->has('is_member_of_indigenous_people') ? 1 : 0,
             ]
         );
 
@@ -395,6 +398,10 @@ class ApplicantController extends Controller
             'is_member_of_indigenous_people' => 'nullable|boolean',
         ]);
 
+        foreach (['is_person_with_disability', 'is_solo_parent', 'is_member_of_indigenous_people'] as $field) {
+            $validated[$field] = $request->has($field) ? 1 : 0;
+        }
+
         ApplicantProfile::updateOrCreate(
             ['user_id' => auth()->id()],
             $validated
@@ -421,7 +428,17 @@ class ApplicantController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $application->load(['user', 'job.plantillaPosition', 'educations', 'trainings', 'experiences', 'eligibilities', 'documents.documentType']);
+        $application->load([
+            'user',
+            'job.plantillaPosition',
+            'educations',
+            'trainings',
+            'experiences',
+            'eligibilities',
+            'documents.documentType',
+            'sectorEvaluations.evaluatedBy',
+            'reviewedBy',
+        ]);
 
         if (request()->expectsJson()) {
             return response()->json($application);

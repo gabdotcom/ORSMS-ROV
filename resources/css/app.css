@@ -6,6 +6,133 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --color-primary: #0057B8;
+  --color-primary-active: #004494;
+  --color-text-link: #0057B8;
+  --color-text-link-secondary: #004494;
+  --color-ink: #171717;
+  --color-body: #60646c;
+  --color-muted: #999999;
+  --color-muted-soft: #cccccc;
+  --color-hairline: #f0f0f3;
+  --color-hairline-soft: #f5f5f7;
+  --color-hairline-strong: #dcdee0;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-surface-card: #ffffff;
+  --color-surface-strong: #f0f0f3;
+  --color-surface-dark: #171717;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b0b4ba;
+  --color-gradient-sky-light: #e6f0fa;
+  --color-gradient-sky-mid: #cce0f5;
+  --color-semantic-success: #16a34a;
+  --color-accent-warning: #ab6400;
+  --color-accent-preview: #8145b5;
+  --color-accent-link-bright: #47c2ff;
+  --color-semantic-error: #eb8e90;
+  --color-semantic-error-strong: #dc2626;
+
+  --color-status-qualified-bg: #dcfce7;
+  --color-status-qualified-text: #166534;
+  --color-status-disqualified-bg: #fee2e2;
+  --color-status-disqualified-text: #991b1b;
+  --color-status-pending-bg: #fef3c7;
+  --color-status-pending-text: #92400e;
+  --color-status-draft-bg: #f3f4f6;
+  --color-status-draft-text: #6b7280;
+  --color-status-closed-bg: #fee2e2;
+  --color-status-closed-text: #991b1b;
+  --color-status-open-bg: #dcfce7;
+  --color-status-open-text: #166534;
+  --color-status-reviewed-bg: #dbeafe;
+  --color-status-reviewed-text: #1e40af;
+
+  --color-role-applicant-bg: #dbeafe;
+  --color-role-applicant-text: #1e40af;
+  --color-role-hr-bg: #dcfce7;
+  --color-role-hr-text: #166534;
+  --color-role-board-bg: #fef3c7;
+  --color-role-board-text: #92400e;
+  --color-role-admin-bg: #f3e8ff;
+  --color-role-admin-text: #7c3aed;
+
+  --color-status-active-bg: #dcfce7;
+  --color-status-active-text: #166534;
+  --color-status-inactive-bg: #f3f4f6;
+  --color-status-inactive-text: #6b7280;
+  --color-status-suspended-bg: #fce7f3;
+  --color-status-suspended-text: #be185d;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-xxl: 24px;
+  --radius-pill: 9999px;
+
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-base: 16px;
+  --spacing-md: 20px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 96px;
+
+  --text-display-mega: 64px;
+  --text-display-mega--line-height: 1.05;
+  --text-display-mega--letter-spacing: -1.92px;
+  --text-display-mega--font-weight: 600;
+  --text-display-xl: 48px;
+  --text-display-xl--line-height: 1.1;
+  --text-display-xl--letter-spacing: -1.44px;
+  --text-display-xl--font-weight: 600;
+  --text-display-lg: 36px;
+  --text-display-lg--line-height: 1.15;
+  --text-display-lg--letter-spacing: -1.08px;
+  --text-display-lg--font-weight: 600;
+  --text-display-md: 28px;
+  --text-display-md--line-height: 1.2;
+  --text-display-md--letter-spacing: -0.84px;
+  --text-display-md--font-weight: 600;
+  --text-display-sm: 22px;
+  --text-display-sm--line-height: 1.25;
+  --text-display-sm--letter-spacing: -0.5px;
+  --text-display-sm--font-weight: 600;
+  --text-title-md: 18px;
+  --text-title-md--line-height: 1.4;
+  --text-title-md--font-weight: 600;
+  --text-title-sm: 16px;
+  --text-title-sm--line-height: 1.4;
+  --text-title-sm--font-weight: 600;
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.5;
+  --text-body-md--font-weight: 400;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.5;
+  --text-body-sm--font-weight: 400;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.4;
+  --text-caption--font-weight: 400;
+  --text-caption-uppercase: 11px;
+  --text-caption-uppercase--line-height: 1.4;
+  --text-caption-uppercase--letter-spacing: 0.88px;
+  --text-caption-uppercase--font-weight: 600;
+  --text-code: 13px;
+  --text-code--line-height: 1.5;
+  --text-code--font-weight: 400;
+  --text-button: 14px;
+  --text-button--line-height: 1;
+  --text-button--font-weight: 500;
+  --text-nav-link: 14px;
+  --text-nav-link--line-height: 1.4;
+  --text-nav-link--font-weight: 500;
+
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
