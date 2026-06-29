@@ -46,6 +46,16 @@
         </div>
     </aside>
 
+    <div id="toast"></div>
+    <style>
+        #toast{position:fixed;bottom:24px;right:24px;background:#171717;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:9999;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:400px}
+        #toast.show{opacity:1;transform:translateY(0)}
+        #toast.error{background:#dc2626}
+    </style>
+    <script>
+        function showToast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className=err?'toast error':'toast';void t.offsetWidth;t.classList.add('show');clearTimeout(t._timeout);t._timeout=setTimeout(()=>t.classList.remove('show'),3000)}
+    </script>
+
     <main class="ml-[240px] max-md:ml-16 p-xl max-md:p-base min-h-screen">
         @yield('content')
     </main>
@@ -64,15 +74,6 @@
         </div>
     </div>
 
-        <div id="toast"></div>
-    <style>
-        #toast{position:fixed;bottom:24px;right:24px;background:#171717;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:9999;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:400px}
-        #toast.show{opacity:1;transform:translateY(0)}
-        #toast.error{background:#dc2626}
-    </style>
-    <script>
-        function showToast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className=err?'toast error':'toast';void t.offsetWidth;t.classList.add('show');clearTimeout(t._timeout);t._timeout=setTimeout(()=>t.classList.remove('show'),3000)}
-    </script>
     @stack('scripts')
 
     <script>

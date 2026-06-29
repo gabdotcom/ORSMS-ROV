@@ -4,6 +4,14 @@
 <style>
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; padding: 20px; overflow-y: auto; cursor: pointer; }
 .modal-overlay.show { display: block; }
+.email-modal { z-index: 2100; }
+.email-modal.show { display: flex; align-items: center; justify-content: center; }
+.modal-content { background: white; border-radius: var(--rounded-lg); padding: 24px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+.email-modal .modal-content { max-width: 800px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { font-size: 18px; font-weight: 600; }
+.modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--color-body); }
+
 </style>
 @endpush
 @section('content')
@@ -86,6 +94,8 @@
                 <form id="generalStatusForm" method="POST" action="" class="flex gap-3 items-end flex-wrap">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="email_body" id="emailBodyInput">
+                    <input type="hidden" name="email_subject" id="emailSubjectInput">
                     <div class="flex-1 min-w-[150px]">
                         <label class="block text-xs font-medium mb-[6px]">General Status</label>
                         <select name="status" class="w-full px-3 py-[10px] border border-hairline-strong rounded-md text-sm font-sans" id="generalStatusSelect" style="min-width:150px;">
@@ -98,13 +108,53 @@
                         <label class="block text-xs font-medium mb-[6px]">Notes</label>
                         <textarea name="hr_notes" class="w-full px-3 py-[10px] border border-hairline-strong rounded-md text-sm font-sans resize-vertical" id="generalStatusNotes" placeholder="Add notes..." style="min-height:60px;"></textarea>
                     </div>
-                    <button type="submit" class="bg-primary text-white text-sm font-medium px-[18px] py-[10px] border-none rounded-md cursor-pointer h-10 hover:bg-primary-active transition-colors">Update Status</button>
+                    <button type="button" class="bg-primary text-white text-sm font-medium px-[18px] py-[10px] border-none rounded-md cursor-pointer h-10 hover:bg-primary-active transition-colors" onclick="previewEmail()">Update Status</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Email Preview Modal -->
+<div class="modal-overlay email-modal" id="emailPreviewModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Compose Email</h3>
+            <button class="modal-close" onclick="closeEmailModal()">&times;</button>
+        </div>
+        <div style="font-size:13px;color:var(--color-muted);margin-bottom:16px;">
+            This email will be sent to <strong id="emailRecipient"></strong>
+        </div>
+        <div style="margin-bottom:16px;">
+            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Subject</label>
+            <input type="text" id="emailSubject" class="w-full px-3 py-[10px] border border-hairline-strong rounded-md text-sm font-sans" style="width:100%;">
+        </div>
+        <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">
+                Email Body
+                <button type="button" id="previewToggleBtn" class="bg-surface-card text-ink text-xs font-medium px-3 py-1 border border-hairline-strong rounded-md cursor-pointer inline-flex items-center gap-1 hover:bg-surface-strong transition-colors" style="margin-left:10px;vertical-align:middle;" onclick="showPreview()">Show Preview</button>
+            </label>
+            <textarea id="emailBodySource" class="w-full px-3 py-[10px] border border-hairline-strong rounded-md text-sm font-sans resize-vertical" style="min-height:350px;width:100%;font-size:13px;line-height:1.6;"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;border-top:1px solid var(--color-hairline);padding-top:16px;margin-top:16px;">
+            <button type="button" class="bg-[#e5e7eb] text-sm font-medium px-[18px] py-[10px] border-none rounded-md cursor-pointer h-10 hover:bg-[#d1d5db] transition-colors" onclick="closeEmailModal()">Cancel</button>
+            <button type="button" id="sendEmailBtn" class="bg-primary text-white text-sm font-medium px-[18px] py-[10px] border-none rounded-md cursor-pointer h-10 hover:bg-primary-active transition-colors" onclick="sendEmail()">Send Email &amp; Update Status</button>
+        </div>
+    </div>
+</div>
+
+<!-- Full Preview Modal -->
+<div class="modal-overlay" id="previewModal" style="z-index:2200;">
+    <div class="bg-white rounded-lg max-w-[900px] mx-auto my-5 max-h-[calc(100vh-40px)] overflow-y-auto" style="cursor:default;width:95%;" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between px-lg py-5 border-b border-hairline sticky top-0 bg-white z-[1]">
+            <h2 class="text-xl font-semibold">Email Preview</h2>
+            <button class="bg-none border-none text-[28px] cursor-pointer text-body leading-none hover:text-ink transition-colors" onclick="closePreviewModal()">&times;</button>
+        </div>
+        <div class="p-lg">
+            <iframe id="previewIframe" style="width:100%;height:80vh;border:none;"></iframe>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
 <script>
@@ -131,6 +181,7 @@
     }
     function closeReviewModal() { document.getElementById('reviewModal').classList.remove('show'); currentAppId = null; }
     function renderApplicationDetails(app) {
+        currentEmail = app.user?.email || '';
         const body = document.getElementById('reviewModalBody');
         const createdAt = new Date(app.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
         let html = `<div class="flex gap-base flex-wrap mb-base">` +
@@ -233,8 +284,118 @@
         if (anyD || !allE) ss.innerHTML = `<option value="pending" ${cv==='pending'?'selected':''}>Pending</option><option value="qualified" disabled ${cv==='qualified'?'selected':''}>Qualified</option><option value="disqualified" ${cv==='disqualified'?'selected':''}>Disqualified</option>`;
         else if (allQ) ss.innerHTML = `<option value="pending" ${cv==='pending'?'selected':''}>Pending</option><option value="qualified" ${cv==='qualified'?'selected':''}>Qualified</option><option value="disqualified" ${cv==='disqualified'?'selected':''}>Disqualified</option>`;
     }
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewModal(); } });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewModal(); closeEmailModal(); closePreviewModal(); } });
     document.getElementById('reviewModal')?.addEventListener('click', function(e) { if (e.target === this) closeReviewModal(); });
+    document.getElementById('emailPreviewModal')?.addEventListener('click', function(e) { if (e.target === this) closeEmailModal(); });
+    document.getElementById('previewModal')?.addEventListener('click', function(e) { if (e.target === this) closePreviewModal(); });
+
+    let currentEmail = '';
+
+    function extractBody(fullText) {
+        const match = fullText.match(/ELIGIBILITY\n(?:  [^\n]*\n)*\n([\s\S]+?)\n\nVery truly yours,/);
+        if (match) return match[1].trim();
+        const idx = fullText.lastIndexOf('\n\nVery truly yours,');
+        if (idx === -1) return fullText;
+        return fullText.substring(0, idx).trim();
+    }
+
+    function closeEmailModal() {
+        document.getElementById('emailPreviewModal').classList.remove('show');
+        document.getElementById('previewToggleBtn').innerHTML = 'Show Preview';
+    }
+
+    function previewEmail() {
+        const status = document.getElementById('generalStatusSelect').value;
+        if (status === 'pending') {
+            showToast('Please select Qualified or Disqualified to send an email.', true);
+            return;
+        }
+        const btn = document.querySelector('[onclick="previewEmail()"]');
+        btn.disabled = true;
+        btn.textContent = 'Loading...';
+        fetch(`/hr/applications/${currentAppId}/email-preview?status=` + encodeURIComponent(status))
+            .then(function(r) {
+                if (!r.ok) { return r.json().then(function(d) { throw new Error(d.error || 'Server error'); }); }
+                return r.json();
+            })
+            .then(function(data) {
+                document.getElementById('emailSubject').value = data.subject;
+                document.getElementById('emailBodySource').value = data.text;
+                document.getElementById('emailRecipient').textContent = currentEmail;
+                document.getElementById('previewToggleBtn').innerHTML = 'Show Preview';
+                document.getElementById('emailPreviewModal').classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'Update Status';
+            })
+            .catch(function(err) {
+                console.error('Email preview error:', err);
+                showToast('Failed to load email preview: ' + err.message, true);
+                btn.disabled = false;
+                btn.textContent = 'Update Status';
+            });
+    }
+
+    function showPreview() {
+        const btn = document.getElementById('previewToggleBtn');
+        const status = document.getElementById('generalStatusSelect').value;
+        const body = extractBody(document.getElementById('emailBodySource').value);
+        btn.disabled = true;
+        btn.textContent = 'Building preview...';
+        fetch(`/hr/applications/${currentAppId}/build-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '', 'Accept': 'application/json' },
+            body: JSON.stringify({ status: status, body_text: body })
+        })
+            .then(function(r) {
+                if (!r.ok) { return r.json().then(function(d) { throw new Error(d.error || 'Failed to build email'); }); }
+                return r.json();
+            })
+            .then(function(data) {
+                document.getElementById('previewIframe').srcdoc = data.html;
+                document.getElementById('previewModal').classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = 'Show Preview';
+            })
+            .catch(function(err) {
+                console.error('Build email error:', err);
+                showToast('Failed to build email preview: ' + err.message, true);
+                btn.disabled = false;
+                btn.innerHTML = 'Show Preview';
+            });
+    }
+
+    function closePreviewModal() {
+        document.getElementById('previewModal').classList.remove('show');
+    }
+
+    function sendEmail() {
+        const sendBtn = document.getElementById('sendEmailBtn');
+        const status = document.getElementById('generalStatusSelect').value;
+        const body = extractBody(document.getElementById('emailBodySource').value);
+        const subject = document.getElementById('emailSubject').value;
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Sending...';
+        fetch(`/hr/applications/${currentAppId}/build-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '', 'Accept': 'application/json' },
+            body: JSON.stringify({ status: status, body_text: body })
+        })
+            .then(function(r) {
+                if (!r.ok) { return r.json().then(function(d) { throw new Error(d.error || 'Failed to build email'); }); }
+                return r.json();
+            })
+            .then(function(data) {
+                document.getElementById('emailBodyInput').value = data.html;
+                document.getElementById('emailSubjectInput').value = subject;
+                document.getElementById('generalStatusForm').submit();
+            })
+            .catch(function(err) {
+                console.error('Send email error:', err);
+                showToast('Failed to send email: ' + err.message, true);
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send Email & Update Status';
+            });
+    }
 </script>
 @endpush
 @endsection
