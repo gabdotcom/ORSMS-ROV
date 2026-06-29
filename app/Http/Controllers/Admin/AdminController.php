@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\JobPosting;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -83,6 +84,48 @@ class AdminController extends Controller
         $users = $query->orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.users', compact('users'));
+    }
+
+    public function show(User $user)
+    {
+        $this->checkAdminRole();
+
+        $user->loadCount('applications');
+
+        return response()->json([
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'middle_name' => $user->middle_name,
+            'last_name' => $user->last_name,
+            'extension_name' => $user->extension_name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'status' => $user->status,
+            'applications_count' => $user->applications_count,
+            'created_at' => $user->created_at->format('M d, Y \a\t h:i A'),
+            'updated_at' => $user->updated_at->format('M d, Y \a\t h:i A'),
+        ]);
+    }
+
+    public function resetPassword(Request $request, User $user)
+    {
+        $this->checkAdminRole();
+
+        $validated = $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $message = "Password for {$user->first_name} {$user->last_name} has been reset.";
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 
     public function updateRole(Request $request, User $user)

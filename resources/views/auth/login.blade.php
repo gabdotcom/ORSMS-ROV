@@ -67,7 +67,15 @@
                         </div>
                         <div class="mb-md">
                             <label class="block text-body-sm font-medium text-ink mb-[6px]" for="password">Password</label>
-                            <input type="password" id="password" name="password" class="w-full h-[44px] px-base text-[15px] border border-hairline-strong rounded-md bg-surface-card text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent @error('password') !border-semantic-error-strong @enderror" required>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" class="w-full h-[44px] px-base pr-14 text-[15px] border border-hairline-strong rounded-md bg-surface-card text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent @error('password') !border-semantic-error-strong @enderror" required>
+                                <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center justify-center w-14 text-muted hover:text-ink cursor-pointer border-none bg-transparent" aria-label="Toggle password visibility">
+                                    <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="flex items-center gap-xs mb-lg">
                             <input type="checkbox" id="remember" name="remember" class="w-4 h-4 accent-primary">
@@ -81,5 +89,18 @@
                 </div>
             </div>
         </div>
+    <script>
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        }
+    </script>
     </body>
 </html>

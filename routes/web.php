@@ -71,8 +71,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/admin/users/{user}', [AdminController::class, 'show'])->name('admin.users.show');
     Route::post('/admin/users/{user}/update-role', [AdminController::class, 'updateRole'])->name('admin.users.update-role');
     Route::post('/admin/users/{user}/update-status', [AdminController::class, 'updateStatus'])->name('admin.users.update-status');
+    Route::post('/admin/users/{user}/reset-password', [AdminController::class, 'resetPassword'])->name('admin.users.reset-password');
 
     // HR Job Postings (protected by auth middleware above)
     Route::get('/hr/job-postings', [JobPostingsController::class, 'index'])->name('hr.job-postings');
@@ -90,7 +92,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/hr/applications/{application}/status', [ApplicationsController::class, 'updateStatus'])->name('hr.applications.update-status');
     Route::put('/hr/applications/{application}/sector-evaluation', [ApplicationsController::class, 'storeSectorEvaluation'])->name('hr.applications.sector-evaluation');
     Route::get('/hr/applications/{application}/details', [ApplicationsController::class, 'getApplicationDetails'])->name('hr.applications.details');
+    Route::get('/hr/applications/{application}/email-preview', [ApplicationsController::class, 'emailPreview'])->name('hr.applications.email-preview');
+    Route::post('/hr/applications/{application}/build-email', [ApplicationsController::class, 'buildEmail'])->name('hr.applications.build-email');
+
 
     // HR IER
     Route::get('/hr/ier', [IERController::class, 'index'])->name('hr.ier');
+
 });
+

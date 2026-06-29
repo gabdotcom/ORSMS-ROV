@@ -11,6 +11,16 @@
     @stack('styles')
 </head>
 <body class="font-sans bg-canvas text-ink flex items-center justify-center min-h-screen">
+    <div id="toast"></div>
+    <style>
+        #toast{position:fixed;bottom:24px;right:24px;background:#171717;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:9999;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:400px}
+        #toast.show{opacity:1;transform:translateY(0)}
+        #toast.error{background:#dc2626}
+    </style>
+    <script>
+        function showToast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className=err?'toast error':'toast';void t.offsetWidth;t.classList.add('show');clearTimeout(t._timeout);t._timeout=setTimeout(()=>t.classList.remove('show'),3000)}
+    </script>
+
     @yield('content')
 
     <button type="button" class="fixed top-5 right-5 text-body text-sm px-5 py-[10px] cursor-pointer border border-hairline rounded-md bg-white hover:text-semantic-error-strong transition-colors" onclick="showLogoutConfirm()">Sign Out</button>
@@ -29,15 +39,6 @@
         </div>
     </div>
 
-        <div id="toast"></div>
-    <style>
-        #toast{position:fixed;bottom:24px;right:24px;background:#171717;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:9999;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:400px}
-        #toast.show{opacity:1;transform:translateY(0)}
-        #toast.error{background:#dc2626}
-    </style>
-    <script>
-        function showToast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className=err?'toast error':'toast';void t.offsetWidth;t.classList.add('show');clearTimeout(t._timeout);t._timeout=setTimeout(()=>t.classList.remove('show'),3000)}
-    </script>
     @stack('scripts')
 
     <script>
